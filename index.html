@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aces Up</title>
+    <style>
+        .pile {
+            border: 1px solid black; 
+            margin: 10px;
+            width: 25%;
+            height: auto;
+        }
+        .pile img {
+            width: 25%;
+            height: auto;
+        }
+        #piles {
+            display: flex;
+            justify-content: space-between;
+        }
+        .pile {
+            width: 25%;
+        }
+        .pile:last-child {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aces Up</h1>
+
+    <!-- Repeat for all cards -->
+    <div id="game-board">
+        <div id="piles">
+            <div class="pile" id="pile-0" draggable="true"></div>
+            <div class="pile" id="pile-1" draggable="true"></div>
+            <div class="pile" id="pile-2" draggable="true"></div>
+            <div class="pile" id="pile-3" draggable="true"></div>
+        </div>
+        <div id="foundation"></div>
+    </div>
+    <button id="deal-button">Deal</button>
+    <script src="aces-up.js"></script>
+    <script>
+        // Add your JavaScript code to update the game board here
+        document.getElementById('deal-button').addEventListener('click', dealCards);
+
+        window.onload = function() {
+        for (let i = 0; i < 4; i++) {
+                document.getElementById('pile-' + i).addEventListener('click', function() {
+                    removeIfGreaterCardExists(i);
+                });
+            }
+        }
+
+        let piles1 = document.getElementsByClassName('pile');
+        for (let i = 0; i < piles1.length; i++) {
+            piles1[i].addEventListener('dragstart', function(event) {
+                // Store the ID of the card that is being dragged
+                event.dataTransfer.setData('text', event.target.id);
+            });
+        }
+
+        for (let i = 0; i < piles1.length; i++) {
+            piles1[i].addEventListener('dragover', function(event) {
+                // Allow the card to be dropped on the pile
+                event.preventDefault();
+            });
+            piles1[i].addEventListener('drop', function(event) {
+                // Prevent the browser from handling the drop
+                event.preventDefault();
+                // Get the ID of the card that is being dragged
+                let cardId = event.dataTransfer.getData('text');
+                // Get the source and destination pile indices
+                let sourcePileIndex = getCardPileIndex(cardId);
+                let destPileIndex = getPileIndex(event.target.id);
+                // Move the card from the source pile to the destination pile
+                moveCard(sourcePileIndex, destPileIndex);
+                // Update the game board
+                updateGameBoard();
+            });
+        }        
+    </script>
+</body>
+</html>
