@@ -16,56 +16,70 @@ function createDeck() {
     return deck;
 }
 
-// Function to shuffle the deck
-function shuffleDeck() {
-    for (let i = deck.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
-    }
-}
-
 // Function to deal the cards
 function dealCards() {
+    // Prior to each move, check if the game is over
+    if (isGameOver()) {
+        if (hasPlayerWon()) {
+            // If the player has won, display a "You Won!" message
+            document.getElementById('game-status').textContent = 'You Won!';
+        } else {
+            // If the player has not won, display a "Try Again" message and show the "Try Again" button
+            document.getElementById('game-status').textContent = 'Try Again';
+            document.getElementById('try-again-button').style.display = 'block';
+        }
+        return;
+    }    
+
+    // Deal the top four cards from the deck to the piles
     for (let i = 0; i < 4; i++) {
         piles[i].push(deck.pop());
     }
+    
     updateGameBoard();
+}
+
+function hasPlayerWon() {
+    for (let i = 0; i < piles.length; i++) {
+        let pile = piles[i];
+        // Check if the pile has exactly one card
+        if (pile.length !== 1) {
+            return false;
+        }
+        // Check if the card is an Ace
+        let card = pile[0];
+        if (card.value !== 14) {
+            return false;
+        }
+    }
+    // If all piles have exactly one card and that card is an Ace, the player has won
+    return true;
+}
+
+function isGameOver() {
+    return deck.length === 0;
+}
+
+function moveCard(sourcePileIndex, destPileIndex) {
+    let sourcePile = piles[sourcePileIndex];
+    let destPile = piles[destPileIndex];
+
+    if (sourcePile.length > 1 && destPile.length === 0) {
+        // Move the top card from the source pile to the destination pile
+        let card = sourcePile.pop();
+        destPile.push(card);
+    }
+}
+
+function getPileIndex(pileId) {
+    // Extract the index from the ID
+    let index = parseInt(pileId.split('-')[1]);
+    return index;
 }
 
 // Function to remove a card from a pile
 function removeCard(pileIndex) {
     piles[pileIndex].pop();
-}
-
-// Function to move a card to the foundation
-function moveToFoundation(pileIndex) {
-    foundation.push(piles[pileIndex].pop());
-}
-
-// Function to update the game board
-function updateGameBoard() {
-    for (let i = 0; i < 4; i++) {
-        let pileElement = document.getElementById('pile-' + i);
-        let pile = piles[i];
-        if (pile.length > 0) {
-            let card = pile[pile.length - 1];
-            let cardImage = document.createElement('img');
-            cardImage.src = "images/" + card.value + card.suit[0].toUpperCase() + '.png';
-            pileElement.innerHTML = '';
-            pileElement.appendChild(cardImage);
-        } else {
-            pileElement.innerHTML = '';
-        }
-    }
-}
-
-// Function to play the game
-function playGame() {
-    deck = createDeck();
-    shuffleDeck();
-    dealCards();
-    updateGameBoard();
-    // Add game logic here
 }
 
 function removeIfGreaterCardExists(pileIndex) {
@@ -89,42 +103,44 @@ function removeIfGreaterCardExists(pileIndex) {
                 pileElement.removeChild(pileElement.lastChild);
                 
                 updateGameBoard();
-
                 break;
             }
         }
     }
 }
 
-function moveCard(sourcePileIndex, destPileIndex) {
-    let sourcePile = piles[sourcePileIndex];
-    let destPile = piles[destPileIndex];
-
-    if (sourcePile.length > 1 && destPile.length === 0) {
-        // Move the top card from the source pile to the destination pile
-        let card = sourcePile.pop();
-        destPile.push(card);
+// Function to shuffle the deck
+function shuffleDeck() {
+    for (let i = deck.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
     }
 }
 
-function getCardPileIndex(cardId) {
-    for (let i = 0; i < piles.length; i++) {
+// Function to start the game
+function startGame() {
+    deck = createDeck();
+    shuffleDeck();
+    dealCards();
+    updateGameBoard();
+}
+
+// Function to update the game board
+function updateGameBoard() {
+    for (let i = 0; i < 4; i++) {
+        let pileElement = document.getElementById('pile-' + i);
         let pile = piles[i];
-        for (let j = 0; j < pile.length; j++) {
-            let card = pile[j];
-            if (card.id === cardId) {
-                return i;
-            }
+        if (pile.length > 0) {
+            let card = pile[pile.length - 1];
+            let cardImage = document.createElement('img');
+            cardImage.src = "images/" + card.value + card.suit[0].toUpperCase() + '.png';
+            pileElement.innerHTML = '';
+            pileElement.appendChild(cardImage);
+        } else {
+            pileElement.innerHTML = '';
         }
     }
-    return -1; // Return -1 if the card is not found in any pile
-}
-
-function getPileIndex(pileId) {
-    // Extract the index from the ID
-    let index = parseInt(pileId.split('-')[1]);
-    return index;
 }
 
 // Start the game
-playGame();
+startGame();

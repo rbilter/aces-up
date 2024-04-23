@@ -27,8 +27,12 @@
 </head>
 <body>
     <h1>Aces Up</h1>
+    
+    <!-- Add a new div to display the game status -->
+    <div id="game-status"></div>
+    <!-- Add a new button to start a new game -->
+    <button id="try-again-button" style="display: none;">Try Again</button>
 
-    <!-- Repeat for all cards -->
     <div id="game-board">
         <div id="piles">
             <div class="pile" id="pile-0" draggable="true"></div>
@@ -56,7 +60,7 @@
         for (let i = 0; i < piles1.length; i++) {
             piles1[i].addEventListener('dragstart', function(event) {
                 // Store the ID of the card that is being dragged
-                event.dataTransfer.setData('text', event.target.id);
+                event.dataTransfer.setData('text', piles1[i].id);
             });
         }
 
@@ -69,16 +73,24 @@
                 // Prevent the browser from handling the drop
                 event.preventDefault();
                 // Get the ID of the card that is being dragged
-                let cardId = event.dataTransfer.getData('text');
+                let pileId = event.dataTransfer.getData('text');
+
                 // Get the source and destination pile indices
-                let sourcePileIndex = getCardPileIndex(cardId);
+                let sourcePileIndex = getPileIndex(pileId);
                 let destPileIndex = getPileIndex(event.target.id);
+
                 // Move the card from the source pile to the destination pile
                 moveCard(sourcePileIndex, destPileIndex);
                 // Update the game board
                 updateGameBoard();
             });
-        }        
+        }    
+
+        // Add an event listener to the "Try Again" button to start a new game when it's clicked
+        document.getElementById('try-again-button').addEventListener('click', function() {
+            // Reload the page to start a new game
+            location.reload();
+        });        
     </script>
 </body>
 </html>
