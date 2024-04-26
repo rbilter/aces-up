@@ -3,6 +3,37 @@ let piles = [[], [], [], []];
 let foundation = [];
 let deck = [];
 
+
+// Function to check if a card can be removed from a pile
+function canRemoveCard() {
+    // Get the top cards of all piles
+    const topCards = piles.map(pile => pile[pile.length - 1]).filter(Boolean);
+
+    // Group the top cards by suit
+    const cardsBySuit = topCards.reduce((groups, card) => {
+        if (!groups[card.suit]) {
+            groups[card.suit] = [];
+        }
+        groups[card.suit].push(card);
+        return groups;
+    }, {});
+
+    // Check if there are any suits with two or more cards where one card is ranked lower than the other
+    for (const suit in cardsBySuit) {
+        const cards = cardsBySuit[suit];
+        if (cards.length >= 2) {
+            const minRank = Math.min(...cards.map(card => card.value));
+            const maxRank = Math.max(...cards.map(card => card.value));
+            if (minRank < maxRank) {
+                return true;
+            }
+        }
+    }
+
+    // If no such cards were found, a card cannot be removed
+    return false;
+}
+
 // Function to create a deck
 function createDeck() {
     let suits = ['H', 'D', 'C', 'S'];
@@ -58,7 +89,16 @@ function hasPlayerWon() {
 }
 
 function isGameOver() {
-    return deck.length === 0;
+    const isDeckEmpty = deck.length === 0;
+    const canRemoveAnyCard = canRemoveCard();
+    const hasEmptyPile = piles.some(isPileEmpty);
+
+    return isDeckEmpty && !hasEmptyPile && !canRemoveAnyCard;
+}
+
+// Function to check if a pile is empty
+function isPileEmpty(pile) {
+    return pile.length === 0;
 }
 
 function moveCard(sourcePileIndex, destPileIndex) {
