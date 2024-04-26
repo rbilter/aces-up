@@ -22,12 +22,13 @@ function dealCards() {
     if (isGameOver()) {
         if (hasPlayerWon()) {
             // If the player has won, display a "You Won!" message
-            document.getElementById('game-status').textContent = 'You Won!';
+            document.getElementById('game-status').textContent = 'Congrats, you won!, would you like to ';
         } else {
             // If the player has not won, display a "Try Again" message and show the "Try Again" button
-            document.getElementById('game-status').textContent = 'Try Again';
-            document.getElementById('try-again-button').style.display = 'block';
+            document.getElementById('game-status').textContent = 'Better luck next time, would you like to ';
         }
+        document.getElementById('deal-button').style.display = 'none';
+        document.getElementById('play-again-button').style.display = 'block';
         return;
     }    
 
