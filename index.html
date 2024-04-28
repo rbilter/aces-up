@@ -35,13 +35,8 @@
 </head>
 <body>
     <h1>Aces Up</h1>
-    
-    <!-- Add a new div to display the game status and display the play again button -->
-    <div class="status-container">
-        <div id="game-status"></div>
-        <button id="play-again-button" style="display: none;">Play Again?</button>
-    </div>
 
+    <!-- Game board -->
     <div id="game-board">
         <div id="piles">
             <div class="pile" id="pile-0" draggable="true"></div>
@@ -51,7 +46,16 @@
         </div>
         <div id="foundation"></div>
     </div>
+
+    <!-- Deal button -->
     <button id="deal-button">Deal</button>
+    
+    <!-- Play again button -->
+    <div class="status-container">
+        <div id="game-status"></div>
+        <button id="play-again-button" style="display: none;">Play Again?</button>
+    </div>
+
     <script src="aces-up.js"></script>
     <script>
         // Add your JavaScript code to update the game board here
